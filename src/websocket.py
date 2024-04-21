@@ -3,7 +3,7 @@ import json
 import time
 import asyncio
 from . import database
-        
+    
 async def lazy_guild_loading(websocket, guild_id):
     try:
         request_payload = {
@@ -40,7 +40,7 @@ async def connect_to_gateway(self, token):
             guilds_response = await websocket.recv()
             guilds_data = json.loads(guilds_response)
             for guild in guilds_data['d']['guilds']:
-                await database.guild_create(self, guild, True)
+                await database.handle_guild_event(self, guild, "GUILD_CREATE")
             guild_ids = [str(guild['id']) for guild in guilds_data['d']['guilds']]
             print(f"Bot is connected to guilds: {guild_ids}")
             
