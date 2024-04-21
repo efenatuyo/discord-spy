@@ -67,4 +67,6 @@ async def connect_to_gateway(self, token):
                     pass
 
     except websockets.exceptions.ConnectionClosed as e:
+        if "Authentication failed" in e:
+            return print("invalid token")
         print(f"WebSocket connection closed unexpectedly: {e}")
