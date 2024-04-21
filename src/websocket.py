@@ -30,7 +30,6 @@ async def lazy_guild_loading(websocket, guild_id):
         print(f"WebSocket connection closed unexpectedly: {e}")
         
 async def connect_to_gateway(self, token):
-  while True:
     try:
         last_heartbeat_time = time.time()
         async with websockets.connect('wss://gateway.discord.gg/?v=9&encoding=json', max_size=None) as websocket:
@@ -67,6 +66,4 @@ async def connect_to_gateway(self, token):
                     pass
 
     except websockets.exceptions.ConnectionClosed as e:
-        if "Authentication failed" in e:
-            return print("invalid token")
         print(f"WebSocket connection closed unexpectedly: {e}")
