@@ -12,7 +12,7 @@ async def receive(self, response):
                           "MESSAGE_DELETE_BULK", "GUILD_BAN_REMOVE", "CONVERSATION_SUMMARY_UPDATE"]:
             handler_function = globals().get(f"{event_type.lower()}")
             if handler_function:
-                await handler_function(event_data)
+                await handler_function(self, event_data)
     # any unhandled event probally can ignore them
     
     print(response)
