@@ -17,7 +17,7 @@ async def lazy_guild_loading(websocket, guild_id):
                 "emojis": True,
                 'roles': True,
                 'guildMembers': True,
-                'threads': False,
+                'threads': True,
                 'integrations': True,
                 'webhooks': True,
                 'invites': True,
