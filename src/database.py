@@ -23,7 +23,8 @@ async def receive(self, response):
             "GUILD_BAN_REMOVE": handle_guild_event,
             "CONVERSATION_SUMMARY_UPDATE": handle_guild_event,
             "CHANNEL_UPDATE": handle_guild_event,
-            "GUILD_MEMBER_REMOVE": handle_guild_event
+            "GUILD_MEMBER_REMOVE": handle_guild_event,
+            "THREAD_LIST_SYNC": handle_guild_event
         }
 
         if event_type in handler_mapping:
@@ -52,8 +53,11 @@ async def handle_guild_event(self, data, event_name):
 
     guild_data = get_or_create_key(self.data, "guilds", {})
     guild_event_data = get_or_create_key(guild_data, guild_id, {})
-    guild_event_data[event_name] = guild_event_data.get(event_name, [])
-    guild_event_data[event_name].append(data)
+    if event_name == "GUILD_CREATE":
+        guild_event_data[event_name] = guild_event_data.get(event_name, data)
+    else:
+        guild_event_data[event_name] = guild_event_data.get(event_name, [])
+        guild_event_data[event_name].append(data)
 
     with open("data.json", "w") as file:
         json.dump(self.data, file, indent=4)
