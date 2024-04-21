@@ -30,7 +30,7 @@ async def receive(self, response):
         if event_type in handler_mapping:
             return await handler_mapping[event_type](self, event_data, event_type)
         
-        print(response)
+        print(event_type)
         
 def get_or_create_key(dictionary, key, default=None):
     if key not in dictionary:
@@ -38,25 +38,41 @@ def get_or_create_key(dictionary, key, default=None):
     return dictionary[key]
 
 async def handle_user_event(self, data, event_name):
+    print(event_name)
     user_id = data.get("member", {}).get("user", {}).get("id") or data.get("author", {}).get("id")
 
+    if user_id is None:
+        category = "unlinked"
+    else:
+        category = user_id
+
     user_data = get_or_create_key(self.data, "users", {})
-    user_event_data = get_or_create_key(user_data, user_id, {})
-    user_event_data[event_name] = user_event_data.get(event_name, [])
+    user_event_data = get_or_create_key(user_data, category, {})
+    if event_name not in user_event_data:
+        user_event_data[event_name] = []
+
     user_event_data[event_name].append(data)
 
     with open("data.json", "w") as file:
         json.dump(self.data, file, indent=4)
 
 async def handle_guild_event(self, data, event_name):
+    print(event_name)
     guild_id = data.get("guild_id") or data.get("id")
 
-    guild_data = get_or_create_key(self.data, "guilds", {})
-    guild_event_data = get_or_create_key(guild_data, guild_id, {})
-    if event_name == "GUILD_CREATE":
-        guild_event_data[event_name] = guild_event_data.get(event_name, data)
+    if guild_id is None:
+        category = "unlinked"
     else:
-        guild_event_data[event_name] = guild_event_data.get(event_name, [])
+        category = guild_id
+    
+    guild_data = get_or_create_key(self.data, "guilds", {})
+    guild_event_data = get_or_create_key(guild_data, category, {})
+    if event_name == "GUILD_CREATE":
+        guild_event_data[event_name] = data
+    else:
+        if event_name not in guild_event_data:
+            guild_event_data[event_name] = []
+        
         guild_event_data[event_name].append(data)
 
     with open("data.json", "w") as file:

@@ -3,7 +3,7 @@ import json
 import time
 import asyncio
 from . import database
-    
+
 async def lazy_guild_loading(websocket, guild_id):
     try:
         request_payload = {
@@ -17,7 +17,7 @@ async def lazy_guild_loading(websocket, guild_id):
                 "emojis": True,
                 'roles': True,
                 'guildMembers': True,
-                'threads': True,
+                'threads': False,
                 'integrations': True,
                 'webhooks': True,
                 'invites': True,
